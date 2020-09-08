@@ -1,4 +1,4 @@
-interface country {
+export interface country {
   name: string;
   code: string;
   lat: number;
@@ -635,7 +635,7 @@ export const countries: Array<country> = [{
   "code": "VA",
   "lat": 41.9,
   "long": 12.45,
-  "pop2020": 0,
+  "pop2020": 801,
   "Density": 801
 }, {
   "name": "Honduras",
