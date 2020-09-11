@@ -87,12 +87,18 @@ const calculateCovidRatio = async function (countries: Array < country > ): Prom
     return new Promise((resolve, reject) => {
         try {
             fetch(covid19ApiUrl).then((response) => response.json()).then((data) => {
+                
+                const falseRatioCountries=[];
                 // caluclate ratio per country
-                countries.forEach((country: any) => {
+                countries.forEach((country: any,index:number) => {
                     const covidCountry = data.Countries.find((covidCountry: any) => covidCountry.CountryCode === country.code);
                     country.confirmed = Number.parseInt(covidCountry ? covidCountry.TotalConfirmed : 0);
                     country.ratio = Number.parseFloat((country.confirmed / country.pop2020).toFixed(20));
+                    if (country.ratio>1){
+                        falseRatioCountries.push(index);
+                    }
                 });
+                falseRatioCountries.forEach(countryIndex=>countries.splice(countryIndex,1));
                 resolve(countries);
             })
         } catch (error) {
@@ -112,9 +118,9 @@ const getIcon = function (iconSvg: string) {
 
 function addMarkers(countries: any, iconsMap: Map<Number, string>) {
     countries.forEach((country: any) => {
-        const iconColor = iconsMap.get(country.ratio);
+        const iconSvg = iconsMap.get(country.ratio);
         const marker = L.marker([country.lat, country.long], {
-            icon: getIcon(iconColor)
+            icon: getIcon(iconSvg)
         });
         marker.bindPopup(`Country : ${country.name}<br>Confirmed Covid-19 cases: ${country.confirmed}<br>Population: ${country.pop2020.toLocaleString()}<br>Population/confirmed ratio:${country.ratio}`);
         marker.addTo(map);
