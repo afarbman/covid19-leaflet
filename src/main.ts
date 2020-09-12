@@ -55,15 +55,14 @@ const normalizeValuesTo100 = function (numbers) {
 
 
 
-const convertPercentageToHex = function (perc) {
-    const reversePrecentage = 100 - perc;
+const convertPercentageToHex = function (precentage) {
     let r, g, b = 0;
-    if (reversePrecentage < 50) {
+    if (precentage < 50) {
         r = 255;
-        g = Math.round(5.1 * reversePrecentage);
+        g = Math.round(5.1 * precentage);
     } else {
         g = 255;
-        r = Math.round(510 - 5.10 * reversePrecentage);
+        r = Math.round(510 - 5.10 * precentage);
     }
     var h = r * 0x10000 + g * 0x100 + b * 0x1;
     return '#' + ('000000' + h.toString(16)).slice(-6);
@@ -134,7 +133,7 @@ function getIconsMap(countries: any) {
     const normalizedRatioMap = normalizeValuesTo100(ratioArray);
     const iconsMap = new Map();
     ratioArray.forEach((ratioSource) => {
-        const normalizedRatioPrctg = normalizedRatioMap.get(ratioSource);
+        const normalizedRatioPrctg =100-normalizedRatioMap.get(ratioSource);
         iconsMap.set(ratioSource, getSvgAsBase64(normalizedRatioPrctg));
     });
     return iconsMap;
